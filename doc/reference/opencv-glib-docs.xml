@@ -25,6 +25,7 @@
     <xi:include href="xml/matrix.xml"/>
     <xi:include href="xml/point.xml"/>
     <xi:include href="xml/rectangle.xml"/>
+    <xi:include href="xml/rotated-rectangle.xml"/>
     <xi:include href="xml/size.xml"/>
   </chapter>
 
