@@ -11,4 +11,5 @@
 #include <opencv-glib/matrix.h>
 #include <opencv-glib/point.h>
 #include <opencv-glib/rectangle.h>
+#include <opencv-glib/size.h>
 #include <opencv-glib/video-capture.h>
