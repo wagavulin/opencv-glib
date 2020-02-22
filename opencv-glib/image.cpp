@@ -3,6 +3,7 @@
 #include <opencv-glib/image.hpp>
 #include <opencv-glib/image-error.h>
 #include <opencv-glib/point.hpp>
+#include <opencv-glib/point-array.hpp>
 #include <opencv-glib/rectangle.hpp>
 #include <opencv-glib/size.hpp>
 
@@ -386,6 +387,36 @@ gcv_image_draw_circle(GCVImage *image,
 }
 
 /**
+ * gcv_image_draw_contours:
+ * @image: A #GCVImage.
+ * @point_arrays: (array length=n_point_arrays): An array of #GCVPoints.
+ * @n_point_arrays: The number of @point_arrays.
+ * @color: A #GCVColor to specify line color.
+ * @drawing_options: (nullable): A #GCVDrawingOptions to specify optional parameters.
+ *
+ * It draws a contours outlines or filled contours.
+ *
+ * Since: 1.0.3
+ */
+void
+gcv_image_draw_contours(GCVImage *image,
+                        GCVPointArray **point_arrays,
+                        gint n_point_arrays,
+                        gint contour_index,
+                        GCVColor *color,
+                        GCVDrawingOptions * /*drawing_options*/)
+{
+  auto cv_image = gcv_matrix_get_raw(GCV_MATRIX(image));
+  // Extract only the specified contour in point_arrays for avoid unnecessary copy
+  std::vector<std::vector<cv::Point>> contours{
+    gcv_point_array_get_raw(point_arrays[contour_index])
+  };
+  //contours.push_back(gcv_point_array_get_raw(point_arrays[contour_index]));
+  auto cv_color = gcv_color_get_raw(color);
+  cv::drawContours(*cv_image, contours, 0, *cv_color);
+}
+
+/**
  * gcv_image_draw_marker:
  * @image: A #GCVImage.
  * @position: A #GCVPoint to specify the point where the crosshair is positioned.
@@ -510,6 +541,52 @@ gcv_image_draw_line(GCVImage *image,
              *cv_point1,
              *cv_point2,
              *cv_color);
+  }
+}
+
+/**
+ * gcv_image_test1
+ * @image: A #GCVImage.
+ * @points: (array length=n_points): A hoge.
+ * @n_points: Numbef of points.
+ *
+ * It draws test.
+ *
+ * Since: 1.0.2
+ */
+void
+gcv_image_test1(GCVImage *image,
+                GCVPoint **points,
+                gint n_points)
+{
+  for (int i = 0; i < 2; i++) {
+    GCVPoint* point = points[i];
+    printf("x: %d, y: %d\n", gcv_point_get_x(point), gcv_point_get_y(point));
+  }
+  printf("%d\n", n_points);
+}
+
+/**
+ * gcv_image_test2
+ * @image: A #GCVImage.
+ * @point_arrays: (array length=n_arrays): An array of #GCVPointArray.
+ * @n_arrays: Numbef of @point_arrays.
+ *
+ * It draws test.
+ *
+ * Since: 1.0.2
+ */
+void
+gcv_image_test2(GCVImage *image,
+                GCVPointArray **point_arrays,
+                gint n_arrays)
+{
+  for (gint i = 0; i < n_arrays; ++i) {
+    std::vector<cv::Point> cv_points = gcv_point_array_get_raw(point_arrays[i]);
+    for (const auto& cv_point : cv_points) {
+      printf(" (%d,%d)", cv_point.x, cv_point.y);
+    }
+    printf("\n");
   }
 }
 
@@ -656,6 +733,37 @@ gcv_image_abs_diff(GCVImage *image,
   auto cv_output = std::make_shared<cv::Mat>();
   cv::absdiff(*cv_image, *cv_other_image, *cv_output);
   return gcv_image_new_raw(&cv_output);
+}
+
+/**
+ * gcv_image_find_contours:
+ * @image: A #GCVImage.
+ * @values: (out) (array length=n_values): values.
+ * @n_values: number of values
+ * @mode: mode.
+ * @method: method.
+ *
+ * Find contours.
+ *
+ * Since: 1.0.3
+ */
+void
+gcv_image_find_contours(GCVImage *image,
+                        gint **values,
+                        gint *n_values,
+                        GCVRetrievalMode mode,
+                        GCVContourApproximationMode method)
+{
+  *values = new int[10];
+  for (int i = 0; i < 10; i++) {
+    *values[i] = 10 * i;
+  }
+  *n_values = 10;
+  // auto cv_image = gcv_matrix_get_raw(GCV_MATRIX(image));
+  // *contours = nullptr;
+  // std::vector<std::vector<cv::Point>> cv_contours;
+  // cv::findContours(*cv_image, cv_contours, mode, method);
+  // printf("n pts: %ld\n", cv_contours.size());
 }
 
 G_END_DECLS

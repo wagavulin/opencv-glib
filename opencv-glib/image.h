@@ -3,6 +3,7 @@
 #include <opencv-glib/color.h>
 #include <opencv-glib/matrix.h>
 #include <opencv-glib/point.h>
+#include <opencv-glib/point-array.h>
 #include <opencv-glib/rectangle.h>
 #include <opencv-glib/size.h>
 
@@ -191,6 +192,12 @@ void gcv_image_draw_circle(GCVImage *image,
                            gint radius,
                            GCVColor *color,
                            GCVDrawingOptions *drawing_options);
+void gcv_image_draw_contours(GCVImage *image,
+                             GCVPointArray **point_arrays,
+                             gint n_point_arrays,
+                             gint contour_index,
+                             GCVColor *color,
+                             GCVDrawingOptions *drawing_options);
 void gcv_image_draw_marker(GCVImage *image,
                            GCVPoint *position,
                            GCVColor *color,
@@ -208,6 +215,18 @@ void gcv_image_draw_line(GCVImage *image,
                          GCVPoint *point2,
                          GCVColor *color,
                          GCVDrawingOptions *drawing_options);
+void gcv_image_test1(GCVImage *image,
+                     GCVPoint **points,
+                     gint n_points);
+void gcv_image_test2(GCVImage *image,
+                     GCVPointArray **point_arrays,
+                     gint n_arrays);
+void gcv_image_draw_polylines(GCVImage *image,
+                              GCVPoint **points,
+                              gint n_points,
+                              gboolean is_closed,
+                              GCVColor *color,
+                              GCVDrawingOptions *drawing_options);
 void gcv_image_put_text(GCVImage *image,
                         const gchar *text,
                         GCVPoint *org,
@@ -224,6 +243,63 @@ void gcv_image_draw_rectangle_points(GCVImage *image,
                                      GCVPoint *point2,
                                      GCVColor *color,
                                      GCVDrawingOptions *drawing_options);
+
+
+/**
+ * GCVRetrievalMode:
+ * @GCV_RETRIEVAL_MODE_EXTERNAL: See `cv::RetrievalModes::RETR_EXTERNAL`.
+ * @GCV_REGRIEVAL_MODE_LIST: See `cv::RetrievalModes::RETR_LIST`.
+ * @GCV_REGRIEVAL_MODE_CCOMP: See `cv::RetrievalModes::RETR_CCOMP`.
+ * @GCV_REGRIEVAL_MODE_TREE: See `cv::RetrievalModes::RETR_TREE`.
+ * @GCV_REGRIEVAL_MODE_FLOODFILL: See `cv::RetrievalModes::RETR_FLOODFIILL`.
+ *
+ * Retrieval mode for finding contours corresponding to `cv::RetrievalModes`.
+ *
+ * See also [OpenCV documents](https://docs.opencv.org/).
+ *
+ * We don't have a link to the latest `cv::RetrievalModes` document.
+ * But we can link to a specific version:
+ * [OpenCV 3.4.1's `cv::RetrievalModes`](https://docs.opencv.org/3.4.1/d3/dc0/group__imgproc__shape.html#ga819779b9857cc2f8601e6526a3a5bc71).
+ *
+ * Since 1.0.3
+ */
+typedef enum {
+  GCV_RETRIEVAL_MODE_EXTERNAL = 0,
+  GCV_RETRIEVAL_MODE_LIST = 1,
+  GCV_RETRIEVAL_MODE_CCOMP = 2,
+  GCV_RETRIEVAL_MODE_TREE = 3,
+  GCV_RETRIEVAL_MODE_FLOODFIL = 4
+} GCVRetrievalMode;
+
+/**
+ * GCVContourApproximationMode:
+ * @GCV_CONTOUR_APPROXIMATION_MODE_NONE: See `cv::ContourApproximationModes::CHAIN_APPROX_NONE`.
+ * @GCV_CONTOUR_APPROXIMATION_MODE_SIMPLE: See `cv::ContourApproximationModes::CHAIN_APPROX_SIMPLE`.
+ * @GCV_CONTOUR_APPROXIMATION_MODE_TC89_L1: See `cv::ContourApproximationModes::CHAIN_APPROX_TC89_L1`.
+ * @GCV_CONTOUR_APPROXIMATION_MODE_TC89_KCOS: See `cv::ContourApproximationModes::CHAIN_APPROX_TC89_KCOS`.
+ *
+ * Contour approximation mode for finding contours corresponding to `cv::ContourApproximationModes`.
+ *
+ * See also [OpenCV documents](https://docs.opencv.org/).
+ *
+ * We don't have a link to the latest `cv::ContourApproximationModes` document.
+ * But we can link to a specific version:
+ * [OpenCV 3.4.1's `cv::ContourApproximationModes`](https://docs.opencv.org/3.4.1/d3/dc0/group__imgproc__shape.html#ga4303f45752694956374734a03c54d5ff).
+ *
+ * Since 1.0.3
+ */
+typedef enum {
+  GCV_CONTOUR_APPROXIMATION_MODE_NONE = 1,
+  GCV_CONTOUR_APPROXIMATION_MODE_SIMPLE = 2,
+  GCV_CONTOUR_APPROXIMATION_MODE_TC89_L1 = 3,
+  GCV_CONTOUR_APPROXIMATION_MODE_TC89_KCOS = 4
+} GCVContourApproximationMode;
+
+void gcv_image_find_contours(GCVImage *image,
+                             gint **values,
+                             gint *n_values,
+                             GCVRetrievalMode mode,
+                             GCVContourApproximationMode method);
 
 GCVImage *
 gcv_image_abs_diff(GCVImage *image,
