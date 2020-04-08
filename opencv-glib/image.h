@@ -96,6 +96,40 @@ typedef enum {
   GCV_MARKER_TYPE_TRIANGLE_DOWN = 6
 } GCVMarkerType;
 
+/**
+ * GCVBorderType:
+ * @GCV_BORDER_TYPE_CONSTANT: See `cv::BorderTypes::BORDER_CONSTANT`.
+ * @GCV_BORDER_TYPE_REPLICATE: See `cv::BorderTypes::BORDER_REPLICATE`.
+ * @GCV_BORDER_TYPE_REFLECT: See `cv::BorderTypes::BORDER_REFLECT`.
+ * @GCV_BORDER_TYPE_WRAP: See `cv::BorderTypes::BORDER_WRAP`.
+ * @GCV_BORDER_TYPE_REFLECT_101: See `cv::BorderTypes::BORDER_REFLECT_101`.
+ * @GCV_BORDER_TYPE_TRANSPARENT: See `cv::BorderTypes::BORDER_TRANSPARENT`.
+ * @GCV_BORDER_TYPE_REFLECT101: See `cv::BorderTypes::BORDER_REFLECT101`.
+ * @GCV_BORDER_TYPE_DEFAULT: See `cv::BorderTypes::BORDER_DEFAULT`.
+ * @GCV_BORDER_TYPE_ISOLATED: See `cv::BorderTypes::BORDER_ISOLATED`.
+ *
+ * Line type for drawing functions corresponding to `cv::BorderTypes`.
+ *
+ * See also [OpenCV documents](https://docs.opencv.org/).
+ *
+ * We don't have a link to the latest `cv::BorderTypes` document.
+ * But we can link to a specific version:
+ * [OpenCV 3.4.1's `cv::BorderTypes`](https://docs.opencv.org/3.4.1/d2/de8/group__core__array.html#ga209f2f4869e304c82d07739337eae7c5).
+ *
+ * Since 1.0.2
+ */
+typedef enum {
+  GCV_BORDER_TYPE_CONSTANT = 0,
+  GCV_BORDER_TYPE_REPLICATE = 1,
+  GCV_BORDER_TYPE_REFLECT = 2,
+  GCV_BORDER_TYPE_WRAP = 3,
+  GCV_BORDER_TYPE_REFLECT_101 = 4,
+  GCV_BORDER_TYPE_TRANSPARENT = 5,
+  GCV_BORDER_TYPE_REFLECT101 = GCV_BORDER_TYPE_REFLECT_101,
+  GCV_BORDER_TYPE_DEFAULT = GCV_BORDER_TYPE_REFLECT101,
+  GCV_BORDER_TYPE_ISOLATED = 16,
+} GCVBorderType;
+
 #define GCV_TYPE_DRAWING_OPTIONS (gcv_drawing_options_get_type())
 G_DECLARE_DERIVABLE_TYPE(GCVDrawingOptions,
                          gcv_drawing_options,
@@ -228,5 +262,13 @@ void gcv_image_draw_rectangle_points(GCVImage *image,
 GCVImage *
 gcv_image_abs_diff(GCVImage *image,
                    GCVImage *other_image);
+GCVImage *
+gcv_image_copy_make_border(GCVImage *image,
+                           gint top,
+                           gint bottom,
+                           gint left,
+                           gint right,
+                           GCVBorderType border_type,
+                           GCVColor *color);
 
 G_END_DECLS

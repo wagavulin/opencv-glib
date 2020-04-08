@@ -323,5 +323,36 @@ class TestImage < Test::Unit::TestCase
       assert_equal(expected.bytes.to_s,
                    @image.abs_diff(lined_image).bytes.to_s)
     end
+
+    sub_test_case("#copy_make_border") do
+      def test_simple
+        cloned_image = @image.clone
+        new_image1 = cloned_image.copy_make_border(10, 20, 30, 40, :reflect, CV::Color.new(10, 10, 10))
+        assert_not_equal(cloned_image.bytes.to_s,
+                         new_image1.bytes.to_s)
+        assert_equal([new_image1.n_columns, new_image1.n_rows],
+                     [
+                       cloned_image.n_columns + 30 + 40,
+                       cloned_image.n_rows + 10 + 20,
+                     ])
+        # The last argument is used only when type is :constant, therefore
+        # new_image1 and new_image2 will be same.
+        new_image2 = cloned_image.copy_make_border(10, 20, 30, 40, :reflect)
+        assert_equal(new_image1.bytes.to_s, new_image2.bytes.to_s)
+      end
+
+      def test_constant
+        cloned_image = @image.clone
+        new_image1 = cloned_image.copy_make_border(10, 20, 30, 40, :constant, CV::Color.new(10, 10, 10))
+        new_image2 = cloned_image.copy_make_border(10, 20, 30, 40, :constant, CV::Color.new(0, 0, 0))
+        new_image3 = cloned_image.copy_make_border(10, 20, 30, 40, :constant)
+        assert_not_equal(cloned_image.bytes.to_s,
+                         new_image1.bytes.to_s)
+        assert_not_equal(new_image1.bytes.to_s,
+                         new_image2.bytes.to_s)
+        assert_equal(new_image2.bytes.to_s,
+                     new_image3.bytes.to_s)
+      end
+    end
   end
 end

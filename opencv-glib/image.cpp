@@ -658,6 +658,43 @@ gcv_image_abs_diff(GCVImage *image,
   return gcv_image_new_raw(&cv_output);
 }
 
+/**
+ * gcv_image_copy_make_border:
+ * @image: A #GCVImage.
+ * @top: The top pixels.
+ * @bottom: The bottom pixels.
+ * @left: The left pixels.
+ * @right: The right pixels.
+ * @border_type: The border type.
+ * @color: (nullable): The border value if border_type = GCV_BORDER_TYPE_CONSTANT.
+ *
+ * See also `cv::copyMakeBorder()` in OpenCV.
+ *
+ * Returns: (transfer full): A newly created #GCVImage that forms a border
+ *   around an image.
+ *
+ * Since: 1.0.3
+ */
+GCVImage *
+gcv_image_copy_make_border(GCVImage *image,
+                           gint top,
+                           gint bottom,
+                           gint left,
+                           gint right,
+                           GCVBorderType border_type,
+                           GCVColor *color)
+{
+  auto cv_image = gcv_matrix_get_raw(GCV_MATRIX(image));
+  auto cv_output = std::make_shared<cv::Mat>();
+  if (color) {
+    auto cv_color = gcv_color_get_raw(color);
+    cv::copyMakeBorder(*cv_image, *cv_output, top, bottom, left, right, border_type, *cv_color);
+  } else {
+    cv::copyMakeBorder(*cv_image, *cv_output, top, bottom, left, right, border_type);
+  }
+  return gcv_image_new_raw(&cv_output);
+}
+
 G_END_DECLS
 
 GCVImage *
