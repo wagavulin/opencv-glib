@@ -116,7 +116,7 @@ typedef enum {
  * But we can link to a specific version:
  * [OpenCV 3.4.1's `cv::BorderTypes`](https://docs.opencv.org/3.4.1/d2/de8/group__core__array.html#ga209f2f4869e304c82d07739337eae7c5).
  *
- * Since 1.0.2
+ * Since 1.0.3
  */
 typedef enum {
   GCV_BORDER_TYPE_CONSTANT = 0,
