@@ -7,6 +7,7 @@ RUN \
     glew \
     gobject-introspection \
     hdf5 \
+    libffi \
     make \
     meson \
     opencv \
